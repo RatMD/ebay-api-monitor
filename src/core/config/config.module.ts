@@ -10,4 +10,4 @@ import { validate } from './config.validation';
         }),
     ],
 })
-export class ConfigModule { }
+export class ConfigModule {}

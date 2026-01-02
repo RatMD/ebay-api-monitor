@@ -1,30 +1,25 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from './core/config/config.module';
+import { DatabaseModule } from './core/database/database.module';
+import { LoggerModule } from './core/logger/logger.module';
+import { HealthModule } from './core/health/health.module';
+import { FeedModule } from './infrastructure/feed/feed.module';
+import { MailModule } from './infrastructure/mail/mail.module';
+import { QueueModule } from './infrastructure/queue/queue.module';
+import { HttpModule } from './infrastructure/http/http.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
-        ScheduleModule.forRoot(),
-        TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => ({
-                type: 'mysql',
-                host: configService.get('HOST'),
-                port: +configService.get('PORT'),
-                username: configService.get('USERNAME'),
-                password: configService.get('PASSWORD'),
-                database: configService.get('DATABASE'),
-                entities: [],
-                synchronize: false,
-            }),
-            inject: [ConfigService],
-        })
+        ConfigModule,
+        DatabaseModule,
+        LoggerModule,
+        HealthModule,
+        FeedModule,
+        HttpModule,
+        MailModule,
+        QueueModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}

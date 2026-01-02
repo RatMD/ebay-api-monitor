@@ -1,10 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import {
-    IsInt,
-    IsNotEmpty,
-    IsString,
-    validateSync,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, validateSync } from 'class-validator';
 
 class EnvironmentVariables {
     @IsString()
@@ -19,7 +14,6 @@ class EnvironmentVariables {
     DB_USER: string;
 
     @IsString()
-    @IsNotEmpty()
     DB_PASSWORD: string;
 
     @IsString()
@@ -29,6 +23,24 @@ class EnvironmentVariables {
     @IsString()
     @IsNotEmpty()
     SMTP_HOST: string;
+
+    @IsInt()
+    @IsNotEmpty()
+    SMTP_PORT: number;
+
+    @IsString()
+    SMTP_USER: string;
+
+    @IsString()
+    SMTP_PASSWORD: string;
+
+    @IsString()
+    @IsNotEmpty()
+    SMTP_FROM_NAME: string;
+
+    @IsString()
+    @IsNotEmpty()
+    SMTP_FROM_MAIL: string;
 }
 
 export function validate(config: Record<string, unknown>) {
