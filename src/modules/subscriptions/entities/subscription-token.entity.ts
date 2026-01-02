@@ -10,9 +10,9 @@ import {
 import { SubscriptionEntity } from './subscription.entity';
 
 @Entity({ name: 'subscription_tokens' })
-@Index('IDX_subscription_tokens_subscription_id', ['subscription_id'])
-@Index('IDX_subscription_tokens_token', ['token'])
-@Index('IDX_subscription_tokens_expires_at', ['expires_at'])
+@Index('index_subscription_tokens_subscription_id', ['subscription_id'])
+@Index('index_subscription_tokens_token', ['token'])
+@Index('index_subscription_tokens_expires_at', ['expires_at'])
 export class SubscriptionTokenEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: string;
@@ -20,7 +20,7 @@ export class SubscriptionTokenEntity {
     @Column({ type: 'bigint', unsigned: true })
     subscription_id: string;
 
-    @ManyToOne(() => SubscriptionEntity, (sub): SubscriptionTokenEntity[] => sub.tokens, {
+    @ManyToOne(() => SubscriptionEntity, (sub): SubscriptionTokenEntity => sub.token, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })

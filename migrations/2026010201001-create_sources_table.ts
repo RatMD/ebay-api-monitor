@@ -65,6 +65,18 @@ export class CreateSourcesTable2026010201001 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: 'supported_version',
+                        type: 'varchar',
+                        length: '255',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'latest_version',
+                        type: 'varchar',
+                        length: '255',
+                        isNullable: true,
+                    },
+                    {
                         name: 'url',
                         type: 'varchar',
                         length: '2048',

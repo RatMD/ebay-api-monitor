@@ -2,7 +2,7 @@ import {
     Column,
     Entity,
     Index,
-    OneToMany,
+    OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SubscriptionTokenEntity } from './subscription-token.entity';
@@ -14,8 +14,8 @@ export enum SubscriptionStatus {
 }
 
 @Entity({ name: 'subscriptions' })
-@Index('IDX_subscriptions_email_unique', ['email'], { unique: true })
-@Index('IDX_subscriptions_status', ['status'])
+@Index('index_subscriptions_email_unique', ['email'], { unique: true })
+@Index('index_subscriptions_status', ['status'])
 export class SubscriptionEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: string;
@@ -41,6 +41,6 @@ export class SubscriptionEntity {
     @Column({ type: 'datetime', nullable: true })
     unsubscribed_at: Date | null;
 
-    @OneToMany(() => SubscriptionTokenEntity, (token): SubscriptionEntity => token.subscription)
-    tokens: SubscriptionTokenEntity[];
+    @OneToOne(() => SubscriptionTokenEntity, (token): SubscriptionEntity => token.subscription)
+    token: SubscriptionTokenEntity;
 }

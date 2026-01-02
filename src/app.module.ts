@@ -7,6 +7,7 @@ import { FeedModule } from './infrastructure/feed/feed.module';
 import { MailModule } from './infrastructure/mail/mail.module';
 import { QueueModule } from './infrastructure/queue/queue.module';
 import { HttpModule } from './infrastructure/http/http.module';
+import { SourcesModule } from './modules/sources/sources.module';
 
 @Module({
     imports: [
@@ -14,10 +15,13 @@ import { HttpModule } from './infrastructure/http/http.module';
         DatabaseModule,
         LoggerModule,
         HealthModule,
+        
         FeedModule,
         HttpModule,
         MailModule,
         QueueModule,
+
+        SourcesModule,
     ],
     controllers: [],
     providers: [],

@@ -18,9 +18,9 @@ export enum MailOutboxStatus {
 }
 
 @Entity({ name: 'mail_outbox' })
-@Index('IDX_mail_outbox_status', ['status'])
-@Index('IDX_mail_outbox_type', ['type'])
-@Index('IDX_mail_outbox_created_at', ['created_at'])
+@Index('index_mail_outbox_status', ['status'])
+@Index('index_mail_outbox_type', ['type'])
+@Index('index_mail_outbox_created_at', ['created_at'])
 export class MailOutboxEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: string;

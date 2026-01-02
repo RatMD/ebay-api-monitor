@@ -11,10 +11,10 @@ import {
 import { SourceEntity } from '../../sources/entities/source.entity';
 
 @Entity({ name: 'release_notes' })
-@Index('IDX_release_notes_source_id', ['source_id'])
-@Index('IDX_release_notes_release_date', ['release_date'])
-@Index('IDX_release_notes_content_hash', ['content_hash'])
-@Index('IDX_release_notes_source_hash_unique', ['source_id', 'content_hash'], { unique: true })
+@Index('index_release_notes_source_id', ['source_id'])
+@Index('index_release_notes_release_date', ['release_date'])
+@Index('index_release_notes_content_hash', ['content_hash'])
+@Index('index_release_notes_source_hash_unique', ['source_id', 'content_hash'], { unique: true })
 export class ReleaseNoteEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: string;

@@ -15,7 +15,7 @@ import { ConfigService } from '@nestjs/config';
                 database: config.get<string>('DB_NAME'),
                 autoLoadEntities: true,
                 synchronize: false,
-                migrations: ['migrations/**/*{.js,.ts}']
+                migrationsRun: false, 
             }),
         }),
     ],

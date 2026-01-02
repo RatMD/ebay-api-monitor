@@ -22,12 +22,12 @@ export class NewsletterService {
     }
 
     async sendOutboxEntry(entry: MailOutboxEntity) {
-        const to = String(entry.payload['to'] ?? '');
-        await this.mail.sendMail({
+        const to = String((entry.payload['to'] ?? '') as string);
+        await this.mail.sendMail(
             to,
-            subject: entry.type === MailOutboxType.CONFIRMATION ? 'Confirm your subscription' : 'Newsletter',
-            text: JSON.stringify(entry.payload, null, 2),
-        });
+            entry.type === MailOutboxType.CONFIRMATION ? 'Confirm your subscription' : 'Newsletter',
+            JSON.stringify(entry.payload, null, 2),
+        );
 
         entry.status = MailOutboxStatus.SENT;
         entry.sent_at = new Date();

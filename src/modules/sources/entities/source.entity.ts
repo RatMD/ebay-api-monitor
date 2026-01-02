@@ -24,9 +24,9 @@ export enum SourceCategory {
 }
 
 @Entity({ name: 'sources' })
-@Index('IDX_sources_slug_unique', ['slug'], { unique: true })
-@Index('IDX_sources_status', ['status'])
-@Index('IDX_sources_category', ['category'])
+@Index('index_sources_slug_unique', ['category', 'slug'], { unique: true })
+@Index('index_sources_status', ['status'])
+@Index('index_sources_category', ['category'])
 export class SourceEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: string;
@@ -43,8 +43,26 @@ export class SourceEntity {
     @Column({ type: 'varchar', length: 255 })
     title: string;
 
+    @Column({ type: 'text', nullable: true })
+    description: string | null;
+
+    @Column({ type: 'text', nullable: true })
+    notes: string | null;
+
+    @Column({ type: 'json', nullable: true })
+    details: Record<string, unknown> | null;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    supported_version: string | null;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    latest_version: string | null;
+
     @Column({ type: 'varchar', length: 2048 })
     url: string;
+
+    @Column({ type: 'varchar', length: 2048 })
+    changelog_url: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     schedule: string | null;
