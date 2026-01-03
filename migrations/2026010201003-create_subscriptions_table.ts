@@ -39,7 +39,13 @@ export class CreateSubscriptionsTable2026010201003 implements MigrationInterface
                     {
                         name: 'email',
                         type: 'varchar',
-                        length: '320',
+                        length: '255',
+                        isNullable: false,
+                    },
+                    {
+                        name: 'hash',
+                        type: 'varchar',
+                        length: '255',
                         isNullable: false,
                     },
                     {
@@ -67,6 +73,11 @@ export class CreateSubscriptionsTable2026010201003 implements MigrationInterface
                     new TableIndex({
                         name: 'index_subscriptions_email_unique',
                         columnNames: ['email'],
+                        isUnique: true,
+                    }),
+                    new TableIndex({
+                        name: 'index_subscriptions_hash_unique',
+                        columnNames: ['hash'],
                         isUnique: true,
                     }),
                     new TableIndex({

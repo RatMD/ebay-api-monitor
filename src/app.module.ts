@@ -8,9 +8,13 @@ import { MailModule } from './infrastructure/mail/mail.module';
 import { QueueModule } from './infrastructure/queue/queue.module';
 import { HttpModule } from './infrastructure/http/http.module';
 import { SourcesModule } from './modules/sources/sources.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { CrawlerModule } from './modules/crawler/crawler.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         ConfigModule,
         DatabaseModule,
         LoggerModule,
@@ -21,7 +25,9 @@ import { SourcesModule } from './modules/sources/sources.module';
         MailModule,
         QueueModule,
 
+        CrawlerModule,
         SourcesModule,
+        SubscriptionsModule,
     ],
     controllers: [],
     providers: [],

@@ -91,12 +91,8 @@ export class CreateReleaseNotesTable2026010201002 implements MigrationInterface 
                         columnNames: ['release_date'],
                     }),
                     new TableIndex({
-                        name: 'index_release_notes_content_hash',
-                        columnNames: ['content_hash'],
-                    }),
-                    new TableIndex({
-                        name: 'index_release_notes_source_hash_unique',
-                        columnNames: ['source_id', 'content_hash'],
+                        name: 'index_release_notes_source_version_unique',
+                        columnNames: ['source_id', 'version'],
                         isUnique: true,
                     }),
                 ],

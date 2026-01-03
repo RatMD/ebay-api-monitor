@@ -31,6 +31,12 @@ export class CreateSubscriptionTokensTable2026010201004 implements MigrationInte
                         isNullable: false,
                     },
                     {
+                        name: 'type',
+                        type: 'varchar',
+                        length: '255',
+                        isNullable: false,
+                    },
+                    {
                         name: 'token',
                         type: 'varchar',
                         length: '255',
@@ -44,7 +50,7 @@ export class CreateSubscriptionTokensTable2026010201004 implements MigrationInte
                     {
                         name: 'expires_at',
                         type: 'datetime',
-                        isNullable: false,
+                        isNullable: true,
                     },
                 ],
                 indices: [

@@ -27,6 +27,7 @@ export enum SourceCategory {
 @Index('index_sources_slug_unique', ['category', 'slug'], { unique: true })
 @Index('index_sources_status', ['status'])
 @Index('index_sources_category', ['category'])
+@Index('index_sources_next_run_at', ['next_run_at'])
 export class SourceEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
     id: string;
@@ -64,11 +65,14 @@ export class SourceEntity {
     @Column({ type: 'varchar', length: 2048 })
     changelog_url: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    schedule: string | null;
+    @Column({ type: 'int', default: 21600, nullable: false, unsigned: true })
+    interval: number;
 
     @Column({ type: 'datetime', nullable: true })
     last_crawled_at: Date | null;
+
+    @Column({ type: 'datetime', nullable: true })
+    next_run_at: Date | null;
 
     @CreateDateColumn({ type: 'datetime' })
     created_at: Date;

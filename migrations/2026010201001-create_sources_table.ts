@@ -89,13 +89,19 @@ export class CreateSourcesTable2026010201001 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
-                        name: 'schedule',
-                        type: 'varchar',
-                        length: '255',
-                        isNullable: true,
+                        name: 'interval',
+                        type: 'int',
+                        default: 21600,
+                        isNullable: false,
+                        unsigned: true
                     },
                     {
                         name: 'last_crawled_at',
+                        type: 'datetime',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'next_run_at',
                         type: 'datetime',
                         isNullable: true,
                     },
@@ -129,6 +135,10 @@ export class CreateSourcesTable2026010201001 implements MigrationInterface {
                     new TableIndex({
                         name: 'index_sources_category',
                         columnNames: ['category'],
+                    }),
+                    new TableIndex({
+                        name: 'index_sources_next_run_at',
+                        columnNames: ['next_run_at'],
                     }),
                 ],
             }),

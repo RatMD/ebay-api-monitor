@@ -1,35 +1,40 @@
 import crypto from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan } from 'typeorm';
+import { Repository } from 'typeorm';
 import { SubscriptionEntity, SubscriptionStatus } from './entities/subscription.entity';
-import { SubscriptionTokenEntity } from './entities/subscription-token.entity';
+import { SubscriptionTokenEntity, SubscriptionTokenType } from './entities/subscription-token.entity';
+import { ConfigService } from '@nestjs/config';
 
+/**
+ *
+ * @param a
+ * @param b
+ * @returns
+ */
 function equals(a: string, b: string): boolean {
-    if (a.length !== b.length) {
+    if (a.length !== 64 || 64 !== b.length) {
         return false;
     }
     if (!/^[0-9a-f]+$/i.test(a) || !/^[0-9a-f]+$/i.test(b)) {
         return false;
     }
 
-    const bufA = Buffer.from(a);
-    const bufB = Buffer.from(b);
-    if (bufA.length !== bufB.length) {
-        return false;
-    } else {
-        return crypto.timingSafeEqual(bufA, bufB);
-    }
+    const bufA = Buffer.from(a, 'hex');
+    const bufB = Buffer.from(b, 'hex');
+    return crypto.timingSafeEqual(bufA, bufB);
 }
 
 @Injectable()
 export class SubscriptionsService {
     /**
      *
+     * @param config
      * @param subsRepo
      * @param tokensRepo
      */
     constructor(
+        private readonly config: ConfigService,
         @InjectRepository(SubscriptionEntity)
         private readonly subsRepo: Repository<SubscriptionEntity>,
         @InjectRepository(SubscriptionTokenEntity)
@@ -44,7 +49,7 @@ export class SubscriptionsService {
      */
     async subscribe(email: string, name?: string | null): Promise<[number, string]> {
         let sub = await this.subsRepo.findOne({
-            where: { email }
+            where: { email },
         });
 
         if (sub !== null) {
@@ -52,24 +57,33 @@ export class SubscriptionsService {
                 return [400, 'Subscription is still pending.'];
             } else if (sub.status === SubscriptionStatus.SUBSCRIBED) {
                 return [400, 'Subscription already exists.'];
-            } else {
-                await this.subsRepo.update({ email }, {
-                    name: name ?? null,
-                    status: SubscriptionStatus.PENDING,
-                });
             }
-        } else {
-            sub = await this.subsRepo.save({
-                email,
+
+            await this.subsRepo.update({ email }, {
                 name: name ?? null,
                 status: SubscriptionStatus.PENDING,
+                subscribed_at: new Date(),
+            });
+            await this.tokensRepo.delete({ subscription_id: sub.id });
+        } else {
+            const value = email.trim().toLowerCase();
+            const hash = crypto
+                .createHmac('sha256', this.config.get<string>('APP_KEY') as string)
+                .update(value)
+                .digest('hex');
+            sub = await this.subsRepo.save({
+                email,
+                hash,
+                name: name ?? null,
+                status: SubscriptionStatus.PENDING,
+                subscribed_at: new Date(),
             });
         }
 
-        const token = crypto.randomBytes(32).toString('hex');
         await this.tokensRepo.save({
             subscription_id: sub.id,
-            token,
+            type: SubscriptionTokenType.CONFIRM,
+            token: crypto.randomBytes(32).toString('hex'),
             expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24),
         });
 
@@ -78,59 +92,85 @@ export class SubscriptionsService {
 
     /**
      *
-     * @param email
-     * @param token
+     * @param hash
+     * @param compareToken
      * @returns
      */
-    async confirm(email: string, token: string): Promise<[number, string]> {
+    async confirm(hash: string, compareToken: string): Promise<[number, string]> {
         const sub = await this.subsRepo.findOne({
-            where: { email }
+            where: { hash }
         });
         if (sub === null) {
             return [404, 'Email address not found.'];
         }
-        if (sub.token.expires_at < new Date()) {
-            await this.tokensRepo.delete({ token: sub.token.token });
-            await this.subsRepo.delete({ email });
+
+        const token = await this.tokensRepo.findOne({
+            where: { 
+                subscription_id: sub.id, 
+                type: SubscriptionTokenType.CONFIRM 
+            },
+            order: { id: 'DESC' },
+        });
+        if (token === null || token.expires_at === null || token.expires_at < new Date()) {
+            await this.tokensRepo.delete({ subscription_id: sub.id });
+            await this.subsRepo.delete({ id: sub.id });
             return [403, 'Subscription token has expired. Please subscribe again.'];
         }
-        if (!equals(sub.token.token, token)) {
+        if (!equals(token.token, compareToken)) {
             return [403, 'Invalid subscription token.'];
         }
 
         await this.subsRepo.update(
             { id: sub.id }, 
-            { status: SubscriptionStatus.SUBSCRIBED }
+            { 
+                status: SubscriptionStatus.SUBSCRIBED, 
+                verified_at: new Date()
+            }
         );
+        await this.tokensRepo.delete({ subscription_id: sub.id });
+        await this.tokensRepo.save({
+            subscription_id: sub.id,
+            type: SubscriptionTokenType.UNSUBSCRIBE,
+            token: crypto.randomBytes(32).toString('hex'),
+            expires_at: null,
+        });
+
         return [200, 'Subscription confirmed successfully.'];
     }
 
     /**
      *
-     * @param email
+     * @param hash
+     * @param compareToken
      * @returns
      */
-    async unsubscribe(email: string): Promise<[number, string]> {
+    async unsubscribe(hash: string, compareToken: string): Promise<[number, string]> {
         const sub = await this.subsRepo.findOne({
-            where: { email }
+            where: { hash }
         });
         if (sub === null) {
             return [404, 'Email address not found.'];
         }
 
-        await this.subsRepo.update({
-            id: sub.id
-        }, {
-            status: SubscriptionStatus.UNSUBSCRIBED
+        const token = await this.tokensRepo.findOne({
+            where: { 
+                subscription_id: sub.id, 
+                type: SubscriptionTokenType.UNSUBSCRIBE 
+            },
+            order: { id: 'DESC' },
         });
-        return [200, 'Subscription revoked successfully.'];
-    }
+        if (token === null || !equals(token.token, compareToken)) {
+            return [403, 'Unsubscribe link seems invalid.'];
+        }
 
-    /**
-     *
-     * @returns
-     */
-    async cleanupExpiredTokens() {
-        return this.tokensRepo.delete({ expires_at: LessThan(new Date()) });
+        await this.subsRepo.update({
+            id: sub.id,
+        }, {
+            status: SubscriptionStatus.UNSUBSCRIBED,
+            unsubscribed_at: new Date,
+        });
+        await this.tokensRepo.delete({ subscription_id: sub.id });
+
+        return [200, 'Subscription revoked successfully.'];
     }
 }

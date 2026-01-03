@@ -9,6 +9,7 @@
     "scripts": {
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+        "env:init": "node -e \"const fs=require('fs');let c=fs.readFileSync(fs.existsSync('.env')?'.env':'.env.example','utf8');c=c.replace(/APP_KEY=\\\"\\\"/,`APP_KEY=\\\"${require('crypto').randomBytes(32).toString('hex')}\\\"`);fs.writeFileSync('.env',c);\"",
         "start": "nest start",
         "start:dev": "nest start --watch",
         "start:debug": "nest start --debug --watch",
@@ -33,6 +34,7 @@
         "@nestjs/schedule": "^6.1.0",
         "@nestjs/typeorm": "^11.0.0",
         "axios": "^1.13.2",
+        "cheerio": "^1.1.2",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.3",
         "dotenv": "^17.2.3",

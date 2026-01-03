@@ -4,14 +4,36 @@ import { CrawlerService } from '../crawler.service';
 
 @Injectable()
 export class PollSourcesJob {
+    /**
+     * 
+     */
     private readonly logger = new Logger(PollSourcesJob.name);
 
+    /**
+     *
+     */
+    private running = false;
+
+    /**
+     *
+     * @param crawler
+     */
     constructor(private readonly crawler: CrawlerService) { }
 
     // @todo use db value
-    @Cron('*/15 * * * *')
+    @Cron('* * * * *')
     async run() {
-        this.logger.log('Polling sources...');
-        await this.crawler.pollAll();
+        if (this.running) {
+            return;
+        }
+        this.running = true;
+        
+        try {
+            await this.crawler.pollDueSources();
+        } catch (err) {
+            this.logger.error('Master poll failed', err);
+        } finally {
+            this.running = false;
+        }
     }
 }

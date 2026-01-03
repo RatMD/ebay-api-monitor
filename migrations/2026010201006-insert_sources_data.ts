@@ -14,7 +14,7 @@ export class InsertSourcesData2026010201006 implements MigrationInterface {
         ["marketing-api", "buy", "Marketing API", "https://developer.ebay.com/api-docs/buy/marketing/v1/overview.html", "https://developer.ebay.com/api-docs/buy/marketing/v1/release-notes.html"],
         ["marketing-beta-api", "buy", "Marketing Beta API", "https://developer.ebay.com/api-docs/buy/marketing/overview.html", "https://developer.ebay.com/api-docs/buy/marketing/release-notes.html"],
         ["offer-api", "buy", "Offer API", "https://developer.ebay.com/api-docs/buy/offer/overview.html", "https://developer.ebay.com/api-docs/buy/offer/release-notes.html"],
-        ["order-api", "buy", "Order API", "https://developer.ebay.com/api-docs/buy/order/release-notes.html"],
+        ["order-api", "buy", "Order API", "https://developer.ebay.com/api-docs/buy/order/overview.html", "https://developer.ebay.com/api-docs/buy/order/release-notes.html"],
         ["taxonomy-api", "buy", "Taxonomy API", "https://developer.ebay.com/api-docs/buy/order/overview.html", "https://developer.ebay.com/api-docs/sell/taxonomy/release-notes.html"],
         ["translation-api", "buy", "Translation API", "https://developer.ebay.com/api-docs/sell/translation/overview.html", "https://developer.ebay.com/api-docs/sell/translation/release-notes.html"],
         ["analytics-api", "developer", "Analytics API", "https://developer.ebay.com/api-docs/developer/analytics/overview.html", "https://developer.ebay.com/api-docs/developer/analytics/release-notes.html"],
@@ -50,11 +50,11 @@ export class InsertSourcesData2026010201006 implements MigrationInterface {
      */
     async up(queryRunner: QueryRunner): Promise<void> {
         const values: string[] = this.apis.map(api => {
-            return `('active', '${api[0]}', '${api[1]}', '${api[2]}', '${api[3]}', '${api[4]}', '0 */6 * * *', NOW(), NOW())`
+            return `('active', '${api[0]}', '${api[1]}', '${api[2]}', '${api[3]}', '${api[4]}', NOW(), NOW())`
         });
         await queryRunner.query(`
             INSERT INTO sources 
-                (status, slug, category, title, url, changelog_url, schedule, created_at, updated_at)
+                (status, slug, category, title, url, changelog_url, created_at, updated_at)
             VALUES
                 ${values.join(', ')};
         `);

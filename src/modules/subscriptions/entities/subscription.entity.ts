@@ -15,6 +15,7 @@ export enum SubscriptionStatus {
 
 @Entity({ name: 'subscriptions' })
 @Index('index_subscriptions_email_unique', ['email'], { unique: true })
+@Index('index_subscriptions_hash_unique', ['hash'], { unique: true })
 @Index('index_subscriptions_status', ['status'])
 export class SubscriptionEntity {
     @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
@@ -26,8 +27,11 @@ export class SubscriptionEntity {
     @Column({ type: 'varchar', length: 255, nullable: true })
     name: string | null;
 
-    @Column({ type: 'varchar', length: 320 })
+    @Column({ type: 'varchar', length: 255 })
     email: string;
+
+    @Column({ type: 'varchar', length: 255 })
+    hash: string;
 
     @Column({ type: 'json', nullable: true })
     scopes: unknown[] | Record<string, unknown> | null;

@@ -4,6 +4,14 @@ import { IsInt, IsNotEmpty, IsString, validateSync } from 'class-validator';
 class EnvironmentVariables {
     @IsString()
     @IsNotEmpty()
+    APP_NAME: string;
+    
+    @IsString()
+    @IsNotEmpty()
+    APP_KEY: string;
+
+    @IsString()
+    @IsNotEmpty()
     DB_HOST: string;
 
     @IsInt()
