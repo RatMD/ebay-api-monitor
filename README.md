@@ -29,7 +29,7 @@ GET  /health
 The endpoint returns a basic success response and can be used by load balancers, monitoring systems, 
 or uptime checks.
 
-### modules/feed
+### modules/release-notes
 
 This module provides aggregated release note feeds for all eBay APIs. You can retrieve a feed 
 containing all available APIs using one of the URLs below, depending on the desired output format:
