@@ -9,7 +9,6 @@
     "scripts": {
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-        "env:init": "node -e \"const fs=require('fs');let c=fs.readFileSync(fs.existsSync('.env')?'.env':'.env.example','utf8');c=c.replace(/APP_KEY=\\\"\\\"/,`APP_KEY=\\\"${require('crypto').randomBytes(32).toString('hex')}\\\"`);fs.writeFileSync('.env',c);\"",
         "start": "nest start",
         "start:dev": "nest start --watch",
         "start:debug": "nest start --debug --watch",
