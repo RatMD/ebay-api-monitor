@@ -46,7 +46,7 @@ export class CrawlerService {
      * @returns
      */
     async pollDueSources() {
-        const due = await this.sources.findDue(1);
+        const due = await this.sources.findDue(5);
 
         if (due.length === 0) {
             this.logger.debug('No sources due');
