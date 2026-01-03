@@ -11,10 +11,19 @@ import { SourcesModule } from './modules/sources/sources.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 import { CrawlerModule } from './modules/crawler/crawler.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ReleaseNotesModule } from './modules/release-notes/release-notes.module';
+import { NewsletterModule } from './modules/newsletter/newsletter.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
     imports: [
+        CacheModule.register({
+            isGlobal: true,
+            ttl: 60 * 30,
+            max: 1_000
+        }),
         ScheduleModule.forRoot(),
+        
         ConfigModule,
         DatabaseModule,
         LoggerModule,
@@ -27,7 +36,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 
         CrawlerModule,
         SourcesModule,
+        ReleaseNotesModule,
         SubscriptionsModule,
+        NewsletterModule,
     ],
     controllers: [],
     providers: [],

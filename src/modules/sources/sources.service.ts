@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull, LessThanOrEqual } from 'typeorm';
+import { Repository, IsNull, LessThanOrEqual, In, FindOptionsWhere } from 'typeorm';
 import { SourceCategory, SourceEntity, SourceStatus } from './entities/source.entity';
 
 @Injectable()
@@ -33,6 +33,42 @@ export class SourcesService {
         return this.sourcesRepo.find({
             where: { status: SourceStatus.ACTIVE, category },
             order: { id: 'ASC' },
+        });
+    }
+
+    /**
+     *
+     * @param sourceId
+     * @param limit
+     * @returns
+     */
+    findByQuery(categories: string[], apis: string[]) {
+        const whereClauses: FindOptionsWhere<SourceEntity>[] = [];
+
+        // Find by Category
+        if (categories.length > 0) {
+            whereClauses.push({ category: In(categories) });
+        }
+
+        // Find by APIs
+        for (const pair of apis) {
+            const [cat, slug] = pair.split('/').map(s => s.trim());
+            if (!cat || !slug) {
+                continue;
+            }
+            whereClauses.push({ category: cat as SourceCategory, slug });
+        }
+
+        // Statement
+        const where = whereClauses.length > 0 ? whereClauses : {};
+        return this.sourcesRepo.find({
+            where,
+            relations: { release_notes: true },
+            order: { 
+                category: 'ASC', 
+                slug: 'ASC',
+                release_notes: { release_date: 'DESC' }
+            },
         });
     }
     

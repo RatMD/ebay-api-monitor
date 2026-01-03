@@ -53,7 +53,7 @@ export class FeedService {
      * @param format
      * @returns
      */
-    createFeed(
+    create(
         data: FeedObject,
         items: FeedItem[],
         format: FeedFormats = 'rss',

@@ -4,7 +4,7 @@ import { SourcesService } from './sources.service';
 import { SourceCategory } from './entities/source.entity';
 
 interface ListSourcesQuery {
-  category?: string;
+    category?: string;
 }
 
 @Controller('api/sources')
@@ -24,6 +24,7 @@ export class SourcesController {
             result: {
                 count: result.length,
                 items: result.map((entity) => ({
+                    path: `${entity.category}/${entity.slug}`,
                     slug: entity.slug,
                     category: entity.category,
                     title: entity.title,
