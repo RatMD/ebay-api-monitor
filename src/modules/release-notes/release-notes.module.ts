@@ -6,6 +6,7 @@ import { SourceEntity } from '../sources/entities/source.entity';
 import { ReleaseNotesController } from './release-notes.controller';
 import { FeedModule } from 'src/infrastructure/feed/feed.module';
 import { SourcesModule } from '../sources/sources.module';
+import { FeedController } from './feed.controller';
 
 @Module({
     imports: [
@@ -13,7 +14,10 @@ import { SourcesModule } from '../sources/sources.module';
         FeedModule,
         SourcesModule,
     ],
-    controllers: [ReleaseNotesController],
+    controllers: [
+        FeedController,
+        ReleaseNotesController
+    ],
     providers: [ReleaseNotesService],
     exports: [ReleaseNotesService],
 })
