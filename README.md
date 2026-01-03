@@ -43,9 +43,7 @@ GET  /feed/feed.json
 **Filtering by API category**  
 
 If you only want release notes from specific API categories, you can filter the feed using the 
-category query parameter.
-
-Supported categories are:
+category query parameter. The supported categories are:
 
 - `buy`
 - `developer`
@@ -67,7 +65,7 @@ available API sources and their identifiers, use the `/api/sources` endpoint pro
 
 Again, multiple apis can be combined using a comma-separated list:
 
-```
+```http
 GET  /feed/feed.[:format]
         ?api=developer/analytics-api,sell/analytics-api
 ```
@@ -77,7 +75,7 @@ GET  /feed/feed.[:format]
 This module exposes all available eBay API sources known to the system. Each source represents a 
 single eBay API and includes its category, identifier-path and additional details.
 
-```
+```http
 GET  /api/sources
 ```
 
@@ -85,7 +83,7 @@ GET  /api/sources
 
 You can limit the result set to a specific API category using the category query parameter.
 
-```
+```http
 GET  /api/sources
         ?category=developer
 ```
@@ -97,7 +95,7 @@ This module manages newsletter subscriptions, including subscription creation, c
 
 **Subscribe to the newsletter**  
 
-Creates a new newsletter subscription. he request body must be sent as `application/json` and must 
+Creates a new newsletter subscription. The request body must be sent as `application/json` and must 
 include at least an `email` address. An optional `name` may also be provided.
 
 ```http
