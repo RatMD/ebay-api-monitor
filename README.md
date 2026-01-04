@@ -6,6 +6,8 @@
     <a href="https://nestjs.com" target="_blank">NestJS</a> is a progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.
 </p>
 
+---
+
 # eBay API Monitor
 
 > [!CAUTION]
