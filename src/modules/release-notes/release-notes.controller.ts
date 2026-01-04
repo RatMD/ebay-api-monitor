@@ -1,7 +1,6 @@
 import type { Cache } from 'cache-manager';
-import type { FastifyReply } from 'fastify';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Controller, Get, Inject, Res } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { SourcesService } from '../sources/sources.service';
 
 @Controller('api')
@@ -22,14 +21,14 @@ export class ReleaseNotesController {
      *
      */
     @Get('release_notes')
-    async list(@Res() res: FastifyReply) {
+    async list() {
         const sources = await this.sources.findByQuery([], []);
-        return res.send({
+        return {
             status: 'success',
             result: {
                 count: sources.length,
                 items: sources
             }
-        });
+        };
     }
 }

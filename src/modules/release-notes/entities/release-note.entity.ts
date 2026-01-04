@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import {
     Column,
     CreateDateColumn,
@@ -8,7 +9,10 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
+import TurndownService from 'turndown';
 import { SourceEntity } from '../../sources/entities/source.entity';
+
+const turndown: TurndownService = new TurndownService();
 
 @Entity({ name: 'release_notes' })
 @Index('index_release_notes_source_id', ['source_id'])
@@ -54,4 +58,17 @@ export class ReleaseNoteEntity {
 
     @UpdateDateColumn({ type: 'datetime' })
     updated_at: Date;
+
+    @Expose()
+    get content_markdown(): string {
+        if (!this.content) {
+            return '';
+        } else {
+            const markdown = turndown.turndown(this.content);
+            return markdown.replace(
+                /\]\(\s*(?:\.\/|\/)?([^)]+)\)/g,
+                '](https://developer.ebay.com/$1)'
+            );
+        }
+    }
 }
